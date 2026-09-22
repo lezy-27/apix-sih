@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { RouteSummary } from '../types';
 import { RouteCard } from '../components/RouteCard';
 import {
@@ -10,7 +10,6 @@ import {
   CartesianGrid,
   Tooltip,
 } from 'recharts';
-import { Plane, TrendingUp, DollarSign, Scale } from 'lucide-react';
 
 interface RouteAnalysisPageProps {
   routes: RouteSummary[];
@@ -26,7 +25,6 @@ export const RouteAnalysisPage: React.FC<RouteAnalysisPageProps> = ({
   const currentRoute =
     routes.find((r) => r.route === selectedRouteCode) || routes[0];
 
-  // Mock / sparkline data formatted for historical chart
   const historicalData = (currentRoute?.sparkline || [100]).map((val, i) => ({
     day: `T-${6 - i}d`,
     index: val,
@@ -34,13 +32,13 @@ export const RouteAnalysisPage: React.FC<RouteAnalysisPageProps> = ({
   }));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fadeIn">
       {/* Route Cards Header Grid */}
       <div>
-        <h2 className="text-base font-bold text-apix-text mb-1">
+        <h2 className="text-base font-bold font-mono text-black mb-1">
           DGCA Route Comparison Grid
         </h2>
-        <p className="text-xs text-apix-secondary mb-3">
+        <p className="text-xs text-zinc-500 mb-3 font-sans">
           Select any route below to inspect real-time pricing dynamics and lead-time dispersion
         </p>
 
@@ -58,35 +56,35 @@ export const RouteAnalysisPage: React.FC<RouteAnalysisPageProps> = ({
 
       {/* Selected Route Deep Dive */}
       {currentRoute && (
-        <div className="bg-white rounded-xl border border-apix-border p-6 shadow-sm space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-slate-100 gap-3">
+        <div className="bg-white rounded-xl border border-zinc-200 p-6 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-zinc-100 gap-3">
             <div>
               <div className="flex items-center space-x-2.5">
-                <span className="text-xl font-extrabold text-apix-text">
+                <span className="text-xl font-black font-mono text-black">
                   {currentRoute.route}
                 </span>
-                <span className="text-sm font-semibold text-slate-500">
+                <span className="text-sm font-semibold text-zinc-700 font-sans">
                   {currentRoute.route_name}
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">
-                  {(currentRoute.weight * 100).toFixed(0)}% National Weight
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-zinc-100 text-black border border-zinc-300">
+                  {(currentRoute.weight * 100).toFixed(0)}% WT
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-zinc-500 mt-1 font-sans">
                 Monitored carriers: IndiGo, Air India, Akasa Air, SpiceJet across T+1 to T+60 windows
               </p>
             </div>
 
             <div className="flex items-center space-x-4">
               <div className="text-right">
-                <span className="text-[11px] text-slate-400 block uppercase font-semibold">Route Index</span>
-                <span className="text-2xl font-black text-blue-600">
+                <span className="text-[10px] text-zinc-400 block uppercase font-mono font-semibold">Route Index</span>
+                <span className="text-2xl font-black font-mono text-black">
                   {currentRoute.route_index.toFixed(1)}
                 </span>
               </div>
-              <div className="text-right border-l border-slate-200 pl-4">
-                <span className="text-[11px] text-slate-400 block uppercase font-semibold">Current Avg Fare</span>
-                <span className="text-2xl font-black text-slate-800">
+              <div className="text-right border-l border-zinc-200 pl-4">
+                <span className="text-[10px] text-zinc-400 block uppercase font-mono font-semibold">Current Avg Fare</span>
+                <span className="text-2xl font-black font-mono text-black">
                   ₹{currentRoute.current_avg_fare.toLocaleString('en-IN')}
                 </span>
               </div>
@@ -95,32 +93,34 @@ export const RouteAnalysisPage: React.FC<RouteAnalysisPageProps> = ({
 
           {/* Route Historical Trend Chart */}
           <div>
-            <h3 className="text-sm font-bold text-slate-800 mb-2">
+            <h3 className="text-sm font-bold font-mono text-black mb-2">
               7-Day Route Index Trajectory
             </h3>
             <div className="h-64 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={historicalData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                  <XAxis dataKey="day" stroke="#94A3B8" fontSize={11} tickLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#F4F4F5" vertical={false} />
+                  <XAxis dataKey="day" stroke="#71717A" fontSize={11} fontFamily="JetBrains Mono, monospace" tickLine={false} />
                   <YAxis
-                    stroke="#94A3B8"
-                    fontSize={11}
+                    stroke="#71717A"
+                    fontSize={10}
+                    fontFamily="JetBrains Mono, monospace"
                     domain={['auto', 'auto']}
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(v: number) => v.toFixed(1)}
                   />
                   <Tooltip
-                    contentStyle={{ backgroundColor: '#FFFFFF', borderRadius: 8, fontSize: 12 }}
+                    contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E4E4E7', borderRadius: 8, fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: '#000000' }}
                     formatter={(val: any) => [Number(val).toFixed(2), 'Route Index']}
                   />
                   <Line
                     type="monotone"
                     dataKey="index"
-                    stroke="#2563EB"
+                    stroke="#000000"
                     strokeWidth={2.5}
-                    dot={{ r: 4, fill: '#2563EB' }}
+                    dot={{ r: 4, fill: '#000000', stroke: '#FFFFFF', strokeWidth: 1.5 }}
+                    animationDuration={800}
                   />
                 </LineChart>
               </ResponsiveContainer>

@@ -84,3 +84,16 @@ async def test_scraping_trigger_run():
     assert data["status"] == "COMPLETED"
     assert data["quotes_collected"] > 0
 
+@pytest.mark.asyncio
+async def test_scraping_sources():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        response = await ac.get("/api/v1/scraping/sources")
+    assert response.status_code == 200
+    data = response.json()
+    assert "sources" in data
+    assert len(data["sources"]) == 6
+    source_names = [s["name"] for s in data["sources"]]
+    assert "MakeMyTrip" in source_names
+    assert "EaseMyTrip" in source_names
+    assert "IndiGo" in source_names
+

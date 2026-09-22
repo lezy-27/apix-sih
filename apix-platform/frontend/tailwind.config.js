@@ -8,19 +8,39 @@ export default {
     extend: {
       colors: {
         apix: {
-          blue: "#E8EEF7",
-          lavender: "#EDE7F6",
-          peach: "#FCE4D6",
-          text: "#26364A",
-          secondary: "#526174",
+          bg: "#FAFAFA",
           surface: "#FFFFFF",
-          bg: "#F8FAFD",
-          accent: "#2563EB",
-          border: "#E2E8F0",
+          surfaceHover: "#F4F4F5",
+          card: "#FFFFFF",
+          cardBorder: "#E4E4E7",
+          border: "#E4E4E7",
+          borderDark: "#18181B",
+          text: "#09090B",
+          primary: "#000000",
+          secondary: "#52525B",
+          muted: "#71717A",
+          accent: "#000000",
+          lightGray: "#F4F4F5",
+        },
+      },
+      animation: {
+        'fadeIn': 'fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        'pulseSlow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'radar': 'radarSweep 2s linear infinite',
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0', transform: 'translateY(6px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
+        radarSweep: {
+          '0%': { transform: 'rotate(0deg)' },
+          '100%': { transform: 'rotate(360deg)' },
         },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'Courier New', 'monospace'],
       },
     },
   },

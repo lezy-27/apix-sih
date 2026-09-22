@@ -21,60 +21,56 @@ export const KPICard: React.FC<KPICardProps> = ({
   badgeText,
   trend,
   trendValue,
-  colorTheme = 'white',
   icon,
 }) => {
-  const themeStyles = {
-    blue: 'bg-[#E8EEF7] border-[#D5E1F2] text-[#26364A]',
-    lavender: 'bg-[#EDE7F6] border-[#DDD3EE] text-[#26364A]',
-    peach: 'bg-[#FCE4D6] border-[#F5CBB6] text-[#26364A]',
-    white: 'bg-white border-[#E2E8F0] text-[#26364A]',
-  };
-
   return (
     <div
       id={id}
-      className={`rounded-xl p-5 border shadow-sm transition-all hover:shadow-md ${themeStyles[colorTheme]}`}
+      className="group bg-white border border-zinc-200 rounded-xl p-5 shadow-xs transition-all duration-300 ease-out hover:-translate-y-1 hover:border-black hover:shadow-lg"
     >
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-semibold uppercase tracking-wider text-slate-600">
+      <div className="flex items-center justify-between mb-2.5">
+        <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-500 font-semibold">
           {title}
         </span>
-        {icon && <div className="text-slate-500">{icon}</div>}
+        {icon && (
+          <div className="p-1.5 rounded-lg bg-zinc-50 border border-zinc-200 text-black group-hover:bg-black group-hover:text-white group-hover:border-black transition-all duration-200">
+            {icon}
+          </div>
+        )}
       </div>
 
-      <div className="flex items-baseline space-x-2 my-1">
-        <span className="text-3xl font-extrabold tracking-tight text-apix-text">
+      <div className="flex items-baseline space-x-2.5 my-1">
+        <span className="text-3xl font-black tracking-tight text-black font-mono">
           {value}
         </span>
         {badgeText && (
-          <span className="text-xs font-medium px-2 py-0.5 rounded bg-white/70 text-slate-700 border border-slate-200/60">
+          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-zinc-100 text-zinc-800 border border-zinc-200">
             {badgeText}
           </span>
         )}
       </div>
 
-      <div className="flex items-center justify-between mt-3 pt-2 border-t border-black/5 text-xs">
+      <div className="flex items-center justify-between mt-3.5 pt-2.5 border-t border-zinc-100 text-xs">
         <div className="flex items-center space-x-1.5">
           {trend === 'up' && (
-            <span className="flex items-center font-semibold text-rose-600">
-              <TrendingUp className="w-3.5 h-3.5 mr-0.5" />
+            <span className="flex items-center font-mono font-bold text-white bg-black px-2 py-0.5 rounded shadow-xs">
+              <TrendingUp className="w-3 h-3 mr-1 text-white" />
               {trendValue}
             </span>
           )}
           {trend === 'down' && (
-            <span className="flex items-center font-semibold text-emerald-600">
-              <TrendingDown className="w-3.5 h-3.5 mr-0.5" />
+            <span className="flex items-center font-mono font-semibold text-zinc-800 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">
+              <TrendingDown className="w-3 h-3 mr-1 text-zinc-600" />
               {trendValue}
             </span>
           )}
           {trend === 'neutral' && (
-            <span className="flex items-center font-medium text-slate-500">
-              <Minus className="w-3.5 h-3.5 mr-0.5" />
+            <span className="flex items-center font-mono text-zinc-600 bg-zinc-100 px-2 py-0.5 rounded border border-zinc-200">
+              <Minus className="w-3 h-3 mr-1 text-zinc-500" />
               {trendValue || '0.00%'}
             </span>
           )}
-          {subtitle && <span className="text-slate-500">{subtitle}</span>}
+          {subtitle && <span className="text-zinc-500 text-[11px] ml-1">{subtitle}</span>}
         </div>
       </div>
     </div>

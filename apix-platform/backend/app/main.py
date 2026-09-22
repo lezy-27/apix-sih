@@ -22,13 +22,13 @@ logger = logging.getLogger("apix.main")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("Initializing APIx Platform Database...")
+    logger.info("Initializing AeroIndex Platform Database...")
     await init_db()
     async with AsyncSessionLocal() as session:
         await seed_database_if_empty(session)
-    logger.info("APIx Platform startup completed successfully.")
+    logger.info("AeroIndex Platform startup completed successfully.")
     yield
-    logger.info("Shutting down APIx Platform...")
+    logger.info("Shutting down AeroIndex Platform...")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -68,7 +68,7 @@ async def health_check():
 @app.get("/", tags=["System"])
 async def root():
     return {
-        "message": "Welcome to the Real-Time Airfare Price Index (APIx) API",
+        "message": "Welcome to the Real-Time Airfare Price Index (AeroIndex) API",
         "docs": f"{settings.API_V1_STR}/docs",
         "health": "/health",
     }

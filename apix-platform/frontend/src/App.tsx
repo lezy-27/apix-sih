@@ -6,6 +6,7 @@ import { RouteAnalysisPage } from './pages/RouteAnalysisPage';
 import { ElasticityPage } from './pages/ElasticityPage';
 import { FareExplorerPage } from './pages/FareExplorerPage';
 import { ScrapingQualityPage } from './pages/ScrapingQualityPage';
+import { PolicySimulatorPage } from './pages/PolicySimulatorPage';
 import { api, formatApiError } from './services/api';
 import {
   DailyKPIs,
@@ -16,6 +17,7 @@ import {
   DataQuality,
 } from './types';
 import { AlertCircle, RefreshCw } from 'lucide-react';
+import { AeroIndexLogo } from './components/Logos';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('overview');
@@ -156,6 +158,12 @@ export const App: React.FC = () => {
           />
         )}
 
+        {activeTab === 'simulator' && (
+          <PolicySimulatorPage
+            currentIndex={kpis?.national_apix_index ?? 104.7}
+          />
+        )}
+
         {activeTab === 'fares' && <FareExplorerPage />}
 
         {activeTab === 'scraping' && (
@@ -168,13 +176,16 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-6 mt-12 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4">
-          <p className="font-medium text-slate-700">
-            Real-Time Airfare Price Index (APIx) Platform • Ministry / DGCA Macroeconomic Analytics
-          </p>
-          <p className="mt-1 text-slate-400">
-            Automated high-frequency retail airfare ingestion, MAD outlier sanitization, and Laspeyres geometric indexing.
+      <footer className="border-t border-zinc-200 bg-white py-8 mt-12 text-center text-xs text-zinc-500">
+        <div className="max-w-7xl mx-auto px-4 flex flex-col items-center">
+          <div className="flex items-center space-x-2.5 mb-2.5">
+            <AeroIndexLogo className="h-6 w-6" />
+            <span className="font-mono font-black text-black text-sm">AeroIndex</span>
+            <span className="text-zinc-300">•</span>
+            <span className="font-semibold text-zinc-700">Real-Time Airfare Price Index Platform</span>
+          </div>
+          <p className="text-zinc-500 max-w-2xl text-[11px] font-sans">
+            Automated high-frequency retail airfare ingestion, Median Absolute Deviation (MAD) outlier sanitization, and Laspeyres geometric price index for Ministry of Civil Aviation & DGCA analytics.
           </p>
         </div>
       </footer>

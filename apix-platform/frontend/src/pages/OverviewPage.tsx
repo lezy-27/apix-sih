@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { DailyKPIs, HistoryPoint, RouteSummary, ScrapingStatus } from '../types';
 import { KPICard } from '../components/KPICard';
 import { LineChartCard } from '../components/LineChartCard';
 import { RouteCard } from '../components/RouteCard';
-import { Activity, TrendingUp, Calendar, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Activity, TrendingUp, Calendar, CheckCircle2 } from 'lucide-react';
 
 interface OverviewPageProps {
   kpis: DailyKPIs | null;
@@ -20,7 +20,6 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
   kpis,
   history,
   routes,
-  scrapingStatus,
   selectedRange,
   onRangeChange,
   onSelectRoute,
@@ -41,20 +40,19 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
       : 'neutral';
 
   return (
-    <div className="space-y-6">
-      {/* 4 KPI Cards per Specification */}
+    <div className="space-y-6 animate-fadeIn">
+      {/* 4 KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: National APIx Index */}
         <KPICard
           id="kpi-national-index"
-          title="National APIx Index"
+          title="National AeroIndex"
           value={kpis ? kpis.national_apix_index.toFixed(1) : '100.0'}
           subtitle="Base: 100.0"
-          badgeText="DGCA Laspeyres"
+          badgeText="Laspeyres Base"
           trend={dailyTrend}
           trendValue={`${(kpis?.daily_change_pct || 0) >= 0 ? '+' : ''}${(kpis?.daily_change_pct || 0).toFixed(2)}%`}
-          colorTheme="blue"
-          icon={<TrendingUp className="w-4 h-4 text-blue-700" />}
+          icon={<TrendingUp className="w-4 h-4" />}
         />
 
         {/* Card 2: Daily Change */}
@@ -62,12 +60,11 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
           id="kpi-daily-change"
           title="Daily Change"
           value={`${(kpis?.daily_change_pct || 0) >= 0 ? '+' : ''}${(kpis?.daily_change_pct || 0).toFixed(2)}%`}
-          subtitle="vs previous trading day"
+          subtitle="vs previous session"
           badgeText="High Frequency"
           trend={dailyTrend}
           trendValue="24h Delta"
-          colorTheme="lavender"
-          icon={<Activity className="w-4 h-4 text-purple-700" />}
+          icon={<Activity className="w-4 h-4" />}
         />
 
         {/* Card 3: Monthly Inflation */}
@@ -75,25 +72,23 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
           id="kpi-monthly-inflation"
           title="Monthly Inflation"
           value={`${(kpis?.monthly_inflation_pct || 0) >= 0 ? '+' : ''}${(kpis?.monthly_inflation_pct || 0).toFixed(2)}%`}
-          subtitle="Annualized 30-day run rate"
+          subtitle="Annualized 30d run rate"
           badgeText="Headline"
           trend={inflationTrend}
           trendValue="30d Rolling"
-          colorTheme="peach"
-          icon={<Calendar className="w-4 h-4 text-amber-700" />}
+          icon={<Calendar className="w-4 h-4" />}
         />
 
         {/* Card 4: Quotes Collected Today */}
         <KPICard
           id="kpi-quotes-collected"
-          title="Quotes Collected Today"
+          title="Quotes Ingested Today"
           value={kpis ? kpis.quotes_collected_today.toLocaleString('en-IN') : '0'}
           subtitle="Across 6 DGCA Routes"
-          badgeText="Live Stream"
+          badgeText="Live Feed"
           trend="neutral"
           trendValue="100% Ingested"
-          colorTheme="white"
-          icon={<CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+          icon={<CheckCircle2 className="w-4 h-4" />}
         />
       </div>
 
@@ -107,17 +102,17 @@ export const OverviewPage: React.FC<OverviewPageProps> = ({
 
       {/* DGCA Representative Route Comparison */}
       <div>
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3.5">
           <div>
-            <h3 className="text-sm font-bold text-apix-text uppercase tracking-wider">
+            <h3 className="text-sm font-mono font-bold text-white uppercase tracking-wider">
               DGCA Representative Routes Breakdown
             </h3>
-            <p className="text-xs text-apix-secondary">
+            <p className="text-xs text-zinc-400 mt-0.5">
               Official weights derived from domestic seat-kilometer deployment & passenger volume
             </p>
           </div>
-          <span className="text-xs text-slate-500 hidden sm:inline">
-            Click any route for detailed analytics
+          <span className="text-[11px] font-mono text-zinc-400 hidden sm:inline">
+            SELECT ROUTE FOR IN-DEPTH METRICS
           </span>
         </div>
 

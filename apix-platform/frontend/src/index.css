@@ -3,47 +3,123 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    color-scheme: light;
+  }
+
   body {
-    background-color: #F8FAFD;
-    color: #26364A;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    background-color: #FAFAFA;
+    color: #09090B;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: #000000;
+    color: #FFFFFF;
   }
 }
 
-/* Restrained, professional styling */
-.card-pastel-blue {
-  background-color: #E8EEF7;
-  border: 1px solid #D5E1F2;
-}
+/* --- Pristine White-Primary Monochrome Design System --- */
 
-.card-pastel-lavender {
-  background-color: #EDE7F6;
-  border: 1px solid #DDD3EE;
-}
-
-.card-pastel-peach {
-  background-color: #FCE4D6;
-  border: 1px solid #F5CBB6;
-}
-
+/* Clean White Card with precision border and subtle elevation */
 .card-white {
   background-color: #FFFFFF;
-  border: 1px solid #E2E8F0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04);
+  border: 1px solid #E4E4E7;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 1px 2px -1px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Custom scrollbars for clean UI */
+.card-white:hover {
+  border-color: #A1A1AA;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+}
+
+/* Active Pill: Solid Black with Pure White Text */
+.pill-active-black {
+  background-color: #000000;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Crisp Clean Scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F1F5F9;
+  background: #F4F4F5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 3px;
+  background: #D4D4D8;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94A3B8;
+  background: #A1A1AA;
+}
+
+/* Animations */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.05); }
+}
+
+.animate-subtlePulse {
+  animation: subtlePulse 2.5s infinite ease-in-out;
+}
+
+/* ---- Custom Range Slider (Policy Simulator) ---- */
+.slider-custom {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 9999px;
+  outline: none;
+}
+
+.slider-custom::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #09090B;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.slider-custom::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.slider-custom::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+  background: #18181B;
+}
+
+.slider-custom::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #09090B;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.slider-custom::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
+.slider-custom::-moz-range-track {
+  height: 6px;
+  border-radius: 9999px;
+  background: transparent;
 }

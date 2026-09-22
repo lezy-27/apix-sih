@@ -17,9 +17,15 @@ logger = logging.getLogger("apix.seeder")
 
 async def seed_database_if_empty(db: AsyncSession) -> None:
     """
-    Seed initial 90 days of realistic historical airfare quotes, cleaned data,
+    Seed initial 7 days of realistic historical airfare quotes, cleaned data,
     daily APIx index values, route indices, and quality metrics if database is fresh.
+    Reduced from 90 days to encourage real data collection via curl_cffi scrapers.
     """
+    # Check if seeding is enabled
+    if not settings.SEED_ON_STARTUP:
+        logger.info("SEED_ON_STARTUP is disabled. Skipping seeding.")
+        return
+
     # Check if index_values already exist
     stmt = select(func.count(IndexValue.id))
     res = await db.execute(stmt)
@@ -28,7 +34,8 @@ async def seed_database_if_empty(db: AsyncSession) -> None:
         logger.info(f"Database already populated ({count} index records). Skipping seeding.")
         return
 
-    logger.info("Fresh database detected. Seeding 90 days of high-frequency airfare data...")
+    SEED_DAYS = 7
+    logger.info(f"Fresh database detected. Seeding {SEED_DAYS} days of historical airfare data...")
     today = datetime.utcnow().date()
     routes = list(settings.ROUTE_WEIGHTS.keys())
     windows = list(settings.ADVANCE_WINDOW_WEIGHTS.keys())
@@ -44,8 +51,8 @@ async def seed_database_if_empty(db: AsyncSession) -> None:
     recent_quotes = []
     recent_cleaned = []
 
-    # Generate 90 days of historical data
-    for d in range(89, -1, -1):
+    # Generate SEED_DAYS of historical data
+    for d in range(SEED_DAYS - 1, -1, -1):
         target_date = today - timedelta(days=d)
         date_str = target_date.strftime("%Y-%m-%d")
         dt_timestamp = datetime.combine(target_date, datetime.min.time()) + timedelta(hours=14)
@@ -62,7 +69,7 @@ async def seed_database_if_empty(db: AsyncSession) -> None:
         cpi_benchmark = round(cpi_benchmark * (1 + 0.00013 + random.gauss(0, 0.0005)), 2)
 
         # 30-day inflation calculation
-        monthly_inflation_pct = round(((current_index - 100.0) / 100.0) * 100.0 * (30.0 / max(1, 90 - d)), 2)
+        monthly_inflation_pct = round(((current_index - 100.0) / 100.0) * 100.0 * (30.0 / max(1, SEED_DAYS - d)), 2)
 
         quotes_count_day = random.randint(180, 260)
 

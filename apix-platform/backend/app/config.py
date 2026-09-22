@@ -1,9 +1,9 @@
 import json
-from typing import Dict, List
+from typing import Dict, List, Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "Real-Time Airfare Price Index (APIx)"
+    PROJECT_NAME: str = "Real-Time Airfare Price Index (AeroIndex)"
     VERSION: str = "1.0.0"
     API_V1_STR: str = "/api/v1"
     ENVIRONMENT: str = "development"
@@ -19,12 +19,21 @@ class Settings(BaseSettings):
         "http://localhost:8000"
     ]
 
-    # Scraper settings
-    SCRAPER_HEADLESS: bool = True
-    SCRAPER_TIMEOUT_MS: int = 15000
-    SCRAPER_CONCURRENCY: int = 3
-    SCRAPER_DOMAIN_DELAY_SEC: float = 1.0
-    USE_MOCK_FALLBACK: bool = True
+    # Scraper settings (curl_cffi)
+    SCRAPER_TIMEOUT_SEC: int = 5
+    SCRAPER_MAX_RETRIES: int = 0
+    SCRAPER_CONCURRENCY: int = 8
+    SCRAPER_DOMAIN_DELAY_SEC: float = 0.1
+    SCRAPER_USER_AGENT: str = (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    )
+    PROXY_URL: Optional[str] = None
+    USE_SYNTHETIC_FALLBACK: bool = True
+
+    # Seeder
+    SEED_ON_STARTUP: bool = True
 
     # DGCA Representative Route Weights (Sum = 1.00)
     ROUTE_WEIGHTS: Dict[str, float] = {

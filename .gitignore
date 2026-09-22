@@ -40,3 +40,7 @@ htmlcov/
 .DS_Store
 Thumbs.db
 desktop.ini
+~$*
+
+# Large recordings (>100MB GitHub limit)
+*.mp4

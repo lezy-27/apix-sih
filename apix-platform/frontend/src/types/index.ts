@@ -104,8 +104,22 @@ export interface ScrapingTriggerResponse {
   message: string;
   run_id: string;
   status: string;
+  scrape_mode: 'live' | 'synthetic';
   quotes_collected: number;
   cleaned_records: number;
   duplicates_removed: number;
   outliers_detected: number;
+}
+
+export interface SourceHealthItem {
+  name: string;
+  source_type: string;
+  status: string;
+  last_response_ms: number | null;
+  quotes_last_run: number;
+  last_checked: string | null;
+}
+
+export interface SourceHealthResponse {
+  sources: SourceHealthItem[];
 }

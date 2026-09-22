@@ -20,6 +20,8 @@ from app.schemas.scraping import (
     DataQualityResponse,
     ScrapingTriggerRequest,
     ScrapingTriggerResponse,
+    SourceHealthResponse,
+    SourceHealthItem,
 )
 
 logger = logging.getLogger("apix.routers.scraping")
@@ -35,18 +37,40 @@ async def get_data_quality(db: AsyncSession = Depends(get_db)):
     """Fetch cleaning telemetry: quality %, duplicates filtered, MAD outliers removed."""
     return await analytics_service.get_data_quality(db)
 
+@router.get("/scraping/sources", response_model=SourceHealthResponse, summary="Get Source Health Status")
+async def get_source_health():
+    """
+    Returns live per-source health status from the scraping engine adapters.
+    Shows current status (Online/Blocked/Timeout/Error), response time, and quotes per run.
+    """
+    health_data = scraping_engine.get_all_source_health()
+    sources = []
+    for item in health_data:
+        sources.append(SourceHealthItem(
+            name=item["name"],
+            source_type=item["source_type"],
+            status=item["status"],
+            last_response_ms=item["last_response_ms"],
+            quotes_last_run=item["quotes_last_run"],
+            last_checked=item["last_checked"],
+        ))
+    return SourceHealthResponse(sources=sources)
+
 @router.post("/scraping/run", response_model=ScrapingTriggerResponse, summary="Trigger Ingestion & Index Pipeline")
 async def trigger_scraping_run(
     req: ScrapingTriggerRequest = ScrapingTriggerRequest(),
     db: AsyncSession = Depends(get_db),
 ):
     """
-    Triggers an asynchronous extraction run across DGCA routes and advance windows,
+    Triggers an extraction run across DGCA routes and advance windows using curl_cffi scrapers,
     runs the MAD cleaning & deduplication engine, recomputes the National APIx index,
     and updates the database.
+
+    Set use_mock=true to use synthetic data generation instead of live OTA scraping.
     """
     run_id = f"RUN-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}-{uuid.uuid4().hex[:6]}"
     start_time = datetime.utcnow()
+    scrape_mode = "synthetic" if req.use_mock else "live"
 
     # Step 1: Create ScrapingRun record
     scraping_run = ScrapingRun(
@@ -61,7 +85,7 @@ async def trigger_scraping_run(
     await db.commit()
 
     try:
-        # Step 2: Extraction
+        # Step 2: Extraction (curl_cffi live scraping or synthetic fallback)
         raw_quotes, failed_sources = await scraping_engine.execute_full_run(
             routes=req.routes,
             advance_windows=req.advance_days,
@@ -71,7 +95,7 @@ async def trigger_scraping_run(
         for q in raw_quotes:
             q["scraping_run_id"] = run_id
 
-        # Step 3: Data Cleaning
+        # Step 3: Data Cleaningg
         cleaned_records, stats = cleaner.clean_fare_batch(raw_quotes)
 
         # Step 4: Persist Raw Fare Quotes
@@ -196,6 +220,7 @@ async def trigger_scraping_run(
             message="Data extraction, MAD cleaning, and APIx calculation completed successfully.",
             run_id=run_id,
             status="COMPLETED",
+            scrape_mode=scrape_mode,
             quotes_collected=len(raw_quotes),
             cleaned_records=len(cleaned_records),
             duplicates_removed=stats["duplicates_removed"],
@@ -212,6 +237,7 @@ async def trigger_scraping_run(
             message=f"Extraction encountered an error: {str(e)}",
             run_id=run_id,
             status="FAILED",
+            scrape_mode=scrape_mode,
             quotes_collected=0,
             cleaned_records=0,
             duplicates_removed=0,

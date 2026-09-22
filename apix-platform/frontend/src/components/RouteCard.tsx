@@ -26,44 +26,44 @@ export const RouteCard: React.FC<RouteCardProps> = ({
     <div
       id={`route-card-${route.route}`}
       onClick={() => onSelect && onSelect(route.route)}
-      className={`rounded-xl p-4 border transition-all cursor-pointer ${
+      className={`group rounded-xl p-4 border transition-all duration-300 cursor-pointer ${
         isSelected
-          ? 'bg-blue-50/70 border-blue-400 shadow-sm ring-1 ring-blue-300'
-          : 'bg-white border-apix-border hover:border-slate-300 hover:shadow-xs'
+          ? 'bg-zinc-50 border-black shadow-sm ring-1 ring-black/10'
+          : 'bg-white border-zinc-200 hover:border-black hover:-translate-y-1 hover:shadow-md'
       }`}
     >
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center space-x-2">
-            <span className="font-bold text-sm text-apix-text tracking-tight">
+            <span className="font-mono font-black text-sm text-black tracking-wider">
               {route.route}
             </span>
-            <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
-              {(route.weight * 100).toFixed(0)}% weight
+            <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded bg-zinc-100 text-zinc-800 border border-zinc-200">
+              {(route.weight * 100).toFixed(0)}% WT
             </span>
           </div>
-          <p className="text-xs text-slate-500 mt-0.5">{route.route_name}</p>
+          <p className="text-xs text-zinc-500 mt-1">{route.route_name}</p>
         </div>
 
         <div className="text-right">
-          <div className="text-base font-extrabold text-apix-text">
+          <div className="text-base font-black font-mono text-black">
             {route.route_index.toFixed(1)}
           </div>
-          <div className="flex items-center justify-end text-xs font-semibold mt-0.5">
+          <div className="flex items-center justify-end text-xs font-mono font-semibold mt-0.5">
             {isPositive && (
-              <span className="flex items-center text-rose-600">
-                <TrendingUp className="w-3 h-3 mr-0.5" />
+              <span className="flex items-center text-black bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200">
+                <TrendingUp className="w-3 h-3 mr-0.5 text-black" />
                 +{route.daily_change_pct.toFixed(2)}%
               </span>
             )}
             {isNegative && (
-              <span className="flex items-center text-emerald-600">
-                <TrendingDown className="w-3 h-3 mr-0.5" />
+              <span className="flex items-center text-zinc-700 bg-zinc-100 px-1.5 py-0.5 rounded border border-zinc-200">
+                <TrendingDown className="w-3 h-3 mr-0.5 text-zinc-600" />
                 {route.daily_change_pct.toFixed(2)}%
               </span>
             )}
             {!isPositive && !isNegative && (
-              <span className="flex items-center text-slate-500">
+              <span className="flex items-center text-zinc-500">
                 <Minus className="w-3 h-3 mr-0.5" />
                 0.00%
               </span>
@@ -72,10 +72,10 @@ export const RouteCard: React.FC<RouteCardProps> = ({
         </div>
       </div>
 
-      <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
+      <div className="mt-3.5 pt-3 border-t border-zinc-100 flex items-center justify-between">
         <div>
-          <span className="text-[11px] text-slate-400 block">Avg Consumer Fare</span>
-          <span className="text-xs font-bold text-slate-800">
+          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block">Avg Fare</span>
+          <span className="text-xs font-black font-mono text-black">
             ₹{route.current_avg_fare.toLocaleString('en-IN')}
           </span>
         </div>
@@ -87,7 +87,7 @@ export const RouteCard: React.FC<RouteCardProps> = ({
               <Line
                 type="monotone"
                 dataKey="val"
-                stroke={isSelected ? '#2563EB' : '#64748B'}
+                stroke={isSelected ? '#000000' : '#71717A'}
                 strokeWidth={1.8}
                 dot={false}
               />
@@ -95,8 +95,8 @@ export const RouteCard: React.FC<RouteCardProps> = ({
           </ResponsiveContainer>
         </div>
 
-        <div className="text-slate-400 group-hover:text-blue-600">
-          <ArrowRight className="w-3.5 h-3.5" />
+        <div className="text-zinc-400 group-hover:text-black transition-colors duration-200">
+          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
         </div>
       </div>
     </div>

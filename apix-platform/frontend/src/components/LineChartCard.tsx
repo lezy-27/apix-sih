@@ -27,26 +27,30 @@ export const LineChartCard: React.FC<LineChartCardProps> = ({
   const [showCPI, setShowCPI] = useState<boolean>(true);
 
   const ranges = [
-    { label: '7 Days', value: 7 },
-    { label: '30 Days', value: 30 },
-    { label: '90 Days', value: 90 },
-    { label: '1 Year', value: 365 },
+    { label: '7D', value: 7 },
+    { label: '30D', value: 30 },
+    { label: '90D', value: 90 },
+    { label: '1Y', value: 365 },
   ];
 
-  // Calculate min and max for Y-axis domain
   const values = data.map((d) => d.apix_index).filter(Boolean);
   const minVal = values.length ? Math.floor(Math.min(...values) * 0.98) : 95;
   const maxVal = values.length ? Math.ceil(Math.max(...values) * 1.02) : 110;
 
   return (
-    <div className="bg-white rounded-xl border border-apix-border p-5 shadow-sm">
+    <div className="bg-white rounded-xl border border-zinc-200 p-5 shadow-xs transition-all duration-300 hover:border-zinc-300">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
-          <h2 className="text-base font-bold text-apix-text">
-            National APIx Index Trend
-          </h2>
-          <p className="text-xs text-apix-secondary mt-0.5">
-            Dynamic Laspeyres-weighted airfare index relative to Q1 baseline (100.0)
+          <div className="flex items-center space-x-2">
+            <h2 className="text-base font-bold text-black font-mono tracking-tight">
+              National AeroIndex Trend
+            </h2>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-100 text-zinc-800 border border-zinc-200 font-semibold">
+              Q1 BASE 100.0
+            </span>
+          </div>
+          <p className="text-xs text-zinc-500 mt-0.5">
+            Dynamic Laspeyres-weighted airfare index with high-frequency retail feed
           </p>
         </div>
 
@@ -55,26 +59,26 @@ export const LineChartCard: React.FC<LineChartCardProps> = ({
           <button
             id="toggle-cpi-btn"
             onClick={() => setShowCPI(!showCPI)}
-            className={`px-2.5 py-1 text-xs font-medium rounded-md border transition-all ${
+            className={`px-3 py-1 text-xs font-mono font-medium rounded-lg border transition-all duration-200 cursor-pointer ${
               showCPI
-                ? 'bg-slate-100 text-slate-800 border-slate-300'
-                : 'bg-white text-slate-400 border-slate-200 line-through'
+                ? 'bg-zinc-100 text-black border-zinc-300 shadow-2xs font-semibold'
+                : 'bg-white text-zinc-400 border-zinc-200 line-through'
             }`}
           >
-            Official CPI Comparison
+            Official CPI
           </button>
 
           {/* Range Buttons */}
-          <div className="inline-flex rounded-md shadow-sm border border-slate-200 bg-slate-50 p-0.5">
+          <div className="inline-flex rounded-lg p-0.5 bg-zinc-100 border border-zinc-200">
             {ranges.map((r) => (
               <button
                 key={r.value}
                 id={`range-btn-${r.value}`}
                 onClick={() => onRangeChange(r.value)}
-                className={`px-2.5 py-1 text-xs font-semibold rounded ${
+                className={`px-2.5 py-1 text-xs font-mono font-bold rounded-md transition-all duration-200 cursor-pointer ${
                   selectedRange === r.value
-                    ? 'bg-white text-blue-600 shadow-xs border border-slate-200/50'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-black text-white shadow-xs'
+                    : 'text-zinc-600 hover:text-black'
                 }`}
               >
                 {r.label}
@@ -85,12 +89,15 @@ export const LineChartCard: React.FC<LineChartCardProps> = ({
       </div>
 
       {isLoading ? (
-        <div className="h-72 flex items-center justify-center text-xs text-slate-400">
-          <div className="animate-pulse">Loading index trend data...</div>
+        <div className="h-72 flex items-center justify-center text-xs text-zinc-400 font-mono">
+          <div className="animate-pulse flex items-center space-x-2">
+            <span className="w-2 h-2 rounded-full bg-black animate-ping"></span>
+            <span>Synthesizing index trend observations...</span>
+          </div>
         </div>
       ) : data.length === 0 ? (
-        <div className="h-72 flex items-center justify-center text-xs text-slate-400">
-          No historical data available.
+        <div className="h-72 flex items-center justify-center text-xs text-zinc-400 font-mono">
+          No historical telemetry records available.
         </div>
       ) : (
         <div className="h-72 sm:h-80 w-full">
@@ -99,11 +106,12 @@ export const LineChartCard: React.FC<LineChartCardProps> = ({
               data={data}
               margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#F4F4F5" vertical={false} />
               <XAxis
                 dataKey="date"
-                stroke="#94A3B8"
-                fontSize={11}
+                stroke="#71717A"
+                fontSize={10}
+                fontFamily="JetBrains Mono, monospace"
                 tickLine={false}
                 tickFormatter={(val: string) => {
                   try {
@@ -115,8 +123,9 @@ export const LineChartCard: React.FC<LineChartCardProps> = ({
                 }}
               />
               <YAxis
-                stroke="#94A3B8"
-                fontSize={11}
+                stroke="#71717A"
+                fontSize={10}
+                fontFamily="JetBrains Mono, monospace"
                 domain={[minVal, maxVal]}
                 tickLine={false}
                 axisLine={false}
@@ -126,40 +135,50 @@ export const LineChartCard: React.FC<LineChartCardProps> = ({
                 contentStyle={{
                   backgroundColor: '#FFFFFF',
                   borderRadius: '8px',
-                  border: '1px solid #E2E8F0',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
-                  fontSize: '12px',
+                  border: '1px solid #E4E4E7',
+                  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.08)',
+                  fontSize: '11px',
+                  fontFamily: 'JetBrains Mono, monospace',
+                  color: '#000000',
                 }}
+                itemStyle={{ color: '#000000' }}
+                labelStyle={{ color: '#52525B', fontWeight: 600 }}
                 formatter={(val: any, name: string) => [
                   Number(val).toFixed(2),
-                  name === 'apix_index' ? 'National APIx' : 'Headline CPI Benchmark',
+                  name === 'apix_index' ? 'National AeroIndex' : 'Headline CPI Benchmark',
                 ]}
                 labelFormatter={(label: any) => `Date: ${label}`}
               />
               <Legend
                 verticalAlign="top"
                 align="right"
-                wrapperStyle={{ paddingBottom: 10, fontSize: 12 }}
-                formatter={(value: string) => (value === 'apix_index' ? 'APIx Dynamic Index' : 'Official CPI Benchmark')}
+                wrapperStyle={{ paddingBottom: 12, fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}
+                formatter={(value: string) => (
+                  <span className="text-zinc-700 font-semibold">
+                    {value === 'apix_index' ? 'AeroIndex Dynamic' : 'Official CPI Benchmark'}
+                  </span>
+                )}
               />
               <Line
                 type="monotone"
                 dataKey="apix_index"
                 name="apix_index"
-                stroke="#2563EB"
+                stroke="#000000"
                 strokeWidth={2.5}
                 dot={false}
-                activeDot={{ r: 5, fill: '#2563EB' }}
+                activeDot={{ r: 5, fill: '#000000', stroke: '#FFFFFF', strokeWidth: 2 }}
+                animationDuration={800}
               />
               {showCPI && (
                 <Line
                   type="monotone"
                   dataKey="cpi_benchmark"
                   name="cpi_benchmark"
-                  stroke="#94A3B8"
-                  strokeWidth={2}
+                  stroke="#71717A"
+                  strokeWidth={1.8}
                   strokeDasharray="4 4"
                   dot={false}
+                  animationDuration={800}
                 />
               )}
             </LineChart>

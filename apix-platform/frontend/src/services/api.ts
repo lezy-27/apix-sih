@@ -8,6 +8,7 @@ import {
   ScrapingStatus,
   DataQuality,
   ScrapingTriggerResponse,
+  SourceHealthResponse,
 } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
@@ -113,8 +114,15 @@ export const api = {
   }): Promise<ScrapingTriggerResponse> => {
     const { data } = await apiClient.post<ScrapingTriggerResponse>(
       '/scraping/run',
-      params || { use_mock: true }
+      params || { use_mock: false },
+      { timeout: 120000 } // 2 minutes for multi-source scraping
     );
+    return data;
+  },
+
+  // 9. Source Health Status
+  getSourceHealth: async (): Promise<SourceHealthResponse> => {
+    const { data } = await apiClient.get<SourceHealthResponse>('/scraping/sources');
     return data;
   },
 };
