@@ -33,7 +33,8 @@ htmlcov/
 .env.*.local
 
 # IDE & OS
-.vscode/
+.vscode/*
+!.vscode/settings.json
 .idea/
 *.swp
 *.swo
